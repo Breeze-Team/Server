@@ -968,7 +968,7 @@ target.toLowerCase().replace(/ /g,'-');
        busy: 'away',
        afk: 'away',
        away: function(target, room, user, connection, cmd) {
-            if (!this.can('away')) return false;
+            if (!this.canTalk()) return false;
             // unicode away message idea by Siiilver
             var t = 'Ⓐⓦⓐⓨ';
             var t2 = 'Away';
