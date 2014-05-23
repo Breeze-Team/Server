@@ -1023,7 +1023,7 @@ user.updateIdentity();
 },
 
 back: function(target, room, user, connection) {
-if (!this.can('away')) return false;
+if (!this.canTalk) return false;
 
 if (user.isAway) {
 if (user.name === user.originalName) {
