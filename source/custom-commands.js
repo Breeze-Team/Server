@@ -732,12 +732,7 @@ target.toLowerCase().replace(/ /g,'-');
 			return connection.sendTo(target, "|noinit|joinfailed|The room '" + target + "' could not be joined.");
 		}
 		if (target.toLowerCase() == "lobby") {
- 			return connection.sendTo('lobby','|html|<div class="infobox" style="border-color:blue"><center><b><u>Welcome to the Breeze Server!' +
- 			'</u></b></center><br/><center><a href ="https://gist.github.com/E4Arsh/8577715"><b>This Server is hosted By BlakJack</b></a></center><br/><br/> ' +
- 			'&nbsp;&nbsp;&nbsp;Battle users in the ladder or in tournaments, learn how to play Pokemon or just chat in lobby! ' +
- 			'Make sure to type <b>/serverhelp</b> or <b>/help</b> to get a list of commands that you can use and <b>/faq</b> to check out frequently asked questions. ' +
- 			'<br/><br/>&nbsp;&nbsp;&nbsp;If you have any questions, issues or concerns should be directed at someone with a rank such as Voice (+), Driver (%), Moderator (@) and Leader (&). ' +
- 			'Only serious issues or questions should be directed to Administrators (~).</div>');
+ 			return connection.sendTo('lobby','|html|<center><img src=http://i.imgur.com/58sxBCl.png><div class="welcome">----------------------------------------------------------------<br><b><u>Welcome to the Breeze server</u></b><br><br>Battle users in the ladder or in tournaments, learn how to <br>play Pokemon or just chat in lobby! Make sure to type <br><code><b>/serverhelp</b></code> or <code><b>/help</b></code> to get a list of commands that<br> you can use and <code><b>/faq</b></code> to check out frequently asked questions. <br><br>If you have any questions, issues or concerns it should be<br> directed at someone with a rank such as Voice (+), Driver (%),<br> Moderator (@) and Leader (&). Only serious issues or<br> questions should be directed to Administrators (~).</div><img src=http://i.imgur.com/ixFYlN9.png>);
  		}
 	},
 
