@@ -504,6 +504,12 @@ exports.Formats = [
 		ruleset: ['OU', 'Same Type Clause']
 	},
 	{
+		name: "OU Discrimination",
+		section: "Other Metagames",
+
+		ruleset: ['OU', 'Different Type Clause']
+	},
+	{
 		name: "Middle Cup",
 		section: "Other Metagames",
 
