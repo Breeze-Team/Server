@@ -532,7 +532,7 @@ exports.BattleFormats = {
 					return;
 				}
 			}
-			return ["Pokemon in your team mustn\'t share share a type."];
+			return ["Pokemon in your team mustn not share share a type."];
 		}
-	},
+	}
 };
