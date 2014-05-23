@@ -5,7 +5,7 @@
 }
 
 .welcome {
-  background: url(http://i.imgur.com/dLt5Mxu.png) no-repeat center;
+  background: url(http://i.imgur.com/dLt5Mxu.png) center repeat-y;
   margin-top:-2px;
   color: 000000;
 }
