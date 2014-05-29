@@ -951,7 +951,11 @@ var plugins = exports.plugins = {
 						var score = x;
 					}
 				}
-				return score;
+				if (score) {
+					return score;
+				} else {
+					return false;
+				}
 			},
 			writeScore: function(user,scorewon) {
 				var data = fs.readFileSync('config/trivia.csv', 'utf8');
@@ -996,18 +1000,17 @@ var plugins = exports.plugins = {
 				// extract the file name
 				var file_name = url.parse(file_url).pathname.split('/').pop();
 				// compose the wget command
-				var wget = 'wget -P ' + DOWNLOAD_DIR + ' ' + file_url; //Crashes in windows as wget isnt pre installed
+				var wget = 'wget -P ' + DOWNLOAD_DIR + ' ' + file_url;
 				// excute wget using child_process' exec function
 
 				var child = exec(wget, function(err, stdout, stderr) {
 					if (err) throw err;
 					else console.log(file_name + ' downloaded to ' + DOWNLOAD_DIR);
 				});
-				// fs.unlinkSync('/tmp/hello')
 				if(fs.existsSync('config/triviaQA.csv')) {
 					fs.unlinkSync('config/triviaQA.csv');
 				}
-				fs.renameSync('config/'+file_name,'/config/triviaQA.csv');	
+				setTimeout(function(){fs.renameSync('config/'+file_name,'config/triviaQA.csv');},3000);	
 			},
 			readQuestions: function() {
 				var data = fs.appendFileSync('config/trivia.csv','utf8');
@@ -1063,18 +1066,6 @@ var plugins = exports.plugins = {
 						plugins.trivia.timer = setInterval(function(){plugins.trivia.value -= tlc[2]},1000);
 						return this.add('|html|<div class=broadcast-blue><b>A new timed trivia game has been started.<br>Points: '+plugins.trivia.value+'<br>Question: '+plugins.trivia.question+'.<br> You would be losing '+tlc[2]+' points per second. <code>/trivia guess,<i>guess</i></code> to guess.');
 					}
-					if (tlc[1] === 'customtimer') {
-						if (isNaN(targets[3]) || isNaN(targets[4])) {
-	        					return this.sendReply('Very funny, now use a real number.');
-	    				}
-						plugins.trivia.status = 'on'
-						plugins.trivia.question = targets[2]
-						plugins.trivia.value = targets[3]
-						plugins.trivia.answer = targets[5]
-						plugins.trivia.timer = setInterval(function(){plugins.trivia.value -= tlc[4]},1000);
-						return this.add('|html|<div class=broadcast-blue><b>A new timed trivia game has been started.<br>Points: '+plugins.trivia.value+'<br>Question: '+plugins.trivia.question+'.<br> You would be losing '+tlc[4]+' points per second. <code>/trivia guess,<i>guess</i></code> to guess.');
-					}
-
 				}
 				else if (tlc[0] === 'guess') {
 					if (!this.canTalk()) return this.sendReplyBox('You dont have permissions to use this command');
@@ -1100,7 +1091,20 @@ var plugins = exports.plugins = {
 					if(!targets[1]) return this.sendReplyBox('/trivia score,user - Shows the score of <i>User</i>');
 					var user = Users.get(toId(targets[1]));
 					var score = plugins.trivia.functions.readScore(user);
+					if(score !== false) {
 					return this.sendReplyBox(user.name+'\'s Trivia Score is '+score);
+					} else {
+						return this.sendReplyBox(user.name+' hasn\'t won any trivia games.')
+					}
+				}
+				else if	(tlc[0] === 'help') {
+					if(!this.canBroadcast()) return;
+					return this.sendReplyBox('<b><u><center>Trivia Help</center></u></b><br><br>'+
+							  '<code>-/trivia new,random</code> Creates a random trivia game from the databse. Requires +<br>'+
+							  '<code>-/trivia new,randomtimer,[points lost per second]</code> Creates a random timed trivia game from the databse. Requires +<br>'+
+							  '<code>-/trivia guess,option</code> Guesses the answer for the current trivia game.<br>'+
+							  '<code>-/trivia score,username</code> Shows the score of username'+
+							  '<code>-/importquestions url</code>. Imports and updates the databse. Please dont use this command if you dont know where you are going (<a href=http://goo.gl/B7V55v>Guide</a>). Requires: #');
 				} else {
 				this.parse('/trivia help');
 				}
