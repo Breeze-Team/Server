@@ -1028,15 +1028,10 @@ var plugins = exports.plugins = {
 				var targets = target.split(',');
 				if (tlc[0] === 'addquestion') {
 					if(!this.can('roompromote')) return this.sendReplyBox('You dont have permissions to use this command');
-					plugins.trivia.functions.addQuestion(targets[1],targets[3],targets[2]);
-					return this.sendReplyBox('Your question '+targets[0]+' has been added to the database');
+					plugins.trivia.functions.addQuestion(targets[1],targets[2],targets[3]);
+					return this.sendReplyBox('Your question '+targets[1]+' has been added to the database');
 				}
-				if (tlc[0] === 'remove') {
-					if(!this.can('roompromote')) return this.sendReplyBox('You dont have permissions to use this command');
-					plugins.trivia.functions.removeQuestion(tlc[1])
-					return this.sendReplyBox('You have successfully deleted Question No.'+tlc[1]);
-				}
-				if (tlc[0] === 'new') {
+				else if (tlc[0] === 'new') {
 					if(!this.can('broadcast',null,room) && tlc[1] !== 'guess') return this.sendReplyBox('You dont have permissions to use this command');
 					if(plugins.trivia.status === 'on') return this.sendReplyBox('There is aldready a trivia game going on');
 					if (tlc[1] === 'random') {
@@ -1066,7 +1061,7 @@ var plugins = exports.plugins = {
 					}
 
 				}
-				if (tlc[0] === 'guess') {
+				else if (tlc[0] === 'guess') {
 					if (!this.canTalk()) return this.sendReplyBox('You dont have permissions to use this command');
 					if (plugins.trivia.status === 'off') return this.sendReplyBox('There is no trivia game going on');
 					var tid = toId(targets[1]);
@@ -1085,12 +1080,14 @@ var plugins = exports.plugins = {
 						return this.sendReplyBox('Hard Luck! Your guess was wrong.');
 					}
 				}
-				if (tlc[0] === 'score') {
+				else if (tlc[0] === 'score') {
 					if(!this.canBroadcast()) return;
 					if(!targets[1]) return this.sendReplyBox('/trivia score,user - Shows the score of <i>User</i>');
 					var user = Users.get(toId(targets[1]));
 					var score = plugins.trivia.functions.readScore(user);
 					return this.sendReplyBox(user.name+'\'s Trivia Score is '+score);
+				} else {
+				this.parse('/trivia help');
 				}
 			}
 		}
