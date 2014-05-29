@@ -10,6 +10,8 @@
  *
  * @license MIT license
  */
+ var exec = require('child_process').exec;
+ var url = require('url');
 
 var plugins = exports.plugins = {
 	/**
@@ -989,10 +991,23 @@ var plugins = exports.plugins = {
 					log.write("\n"+user.userid+','+user.score);
 				}
 			},
-			addQuestion: function(question,answer,value) {
-				var log = fs.createWriteStream('config/triviaQA.csv', {'flags': 'a'});
-				log.write("\n"+question+','+value+','+answer);
-				return;
+			importQuestions: function(file_url) {
+				var DOWNLOAD_DIR = 'config/';
+				// extract the file name
+				var file_name = url.parse(file_url).pathname.split('/').pop();
+				// compose the wget command
+				var wget = 'wget -P ' + DOWNLOAD_DIR + ' ' + file_url; //Crashes in windows as wget isnt pre installed
+				// excute wget using child_process' exec function
+
+				var child = exec(wget, function(err, stdout, stderr) {
+					if (err) throw err;
+					else console.log(file_name + ' downloaded to ' + DOWNLOAD_DIR);
+				});
+				// fs.unlinkSync('/tmp/hello')
+				if(fs.existsSync('config/triviaQA.csv')) {
+					fs.unlinkSync('config/triviaQA.csv');
+				}
+				fs.renameSync('config/'+file_name,'/config/triviaQA.csv');	
 			},
 			readQuestions: function() {
 				var data = fs.appendFileSync('config/trivia.csv','utf8');
@@ -1025,10 +1040,11 @@ var plugins = exports.plugins = {
 				if (room.id !== 'trivia') return this.sendReplyBox('This command can only be used in the trivia room.');
 				var tlc = target.toLowerCase().split(',');
 				var targets = target.split(',');
-				if (tlc[0] === 'addquestion') {
-					if(!this.can('roompromote')) return this.sendReplyBox('You dont have permissions to use this command');
-					plugins.trivia.functions.addQuestion(targets[1],targets[3],targets[2]);
-					return this.sendReplyBox('Your question '+targets[1]+' has been added to the database');
+				if (tlc[0] === 'importquestions') {
+					if(!this.can('roomdesc')) return this.sendReplyBox('You dont have permissions to use this command');
+					if(!targets[1]) return this.sendReplyBox('/trivia importquestions,<em>url</em>.URL must be the download link.');
+					plugins.trivia.functions.importQuestions(tlc[1]);
+					return this.sendReplyBox('Your questions have been updated');
 				}
 				else if (tlc[0] === 'new') {
 					if(!this.can('broadcast',null,room) && tlc[1] !== 'guess') return this.sendReplyBox('You dont have permissions to use this command');
@@ -1036,7 +1052,7 @@ var plugins = exports.plugins = {
 					if (tlc[1] === 'random') {
 						plugins.trivia.functions.getRandomQuestion();
 						plugins.trivia.status = 'on';
-						return this.add('|html|<div class=broadcast-blue><b>A new trivia game has been started.<br>Points: '+plugins.trivia.value+'<br>Quesion: '+plugins.trivia.question+'.<br> <code>/trivia guess,<i>guess</i></code> to guess.');
+						return this.add('|html|<div class=broadcast-blue><b>A new trivia game has been started.<br>Points: '+plugins.trivia.value+'<br>Quesion: '+plugins.trivia.question+'. <code>/trivia guess,<i>guess</i></code> to guess.');
 					}
 					if (tlc[1] === 'randomtimer') {
 						plugins.trivia.functions.getRandomQuestion();
@@ -1073,7 +1089,7 @@ var plugins = exports.plugins = {
 						}
 						if(plugins.trivia.value < 1) plugins.trivia.value = 1;
 						plugins.trivia.functions.writeScore(user,plugins.trivia.value);
-						this.add('|html|<div class=broadcast-blue>User '+user.name+' has successfully guessed the right answer which was '+plugins.trivia.answer+'.. Congratz!<br>(S)He is also rewarded '+plugins.trivia.value+' points for doing so.');
+						this.add('|html|User '+user.name+' has successfully completed the trivia game. Congratz!<br>(S)He is also rewarded '+plugins.trivia.value+' points for doing so.');
 						return plugins.trivia.functions.reset();
 					} else {
 						return this.sendReplyBox('Hard Luck! Your guess was wrong.');
