@@ -1014,7 +1014,6 @@ var plugins = exports.plugins = {
 				var randomness = Math.floor(Math.random()*row.length);
 				var parts = row[randomness].split(",");
 				plugins.trivia.question = parts[0];
-				console.log(parts)
 				plugins.trivia.QNo = randomness;
 				plugins.trivia.answer = parts[2];
 				plugins.trivia.value = parts[1];
