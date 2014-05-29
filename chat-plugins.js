@@ -1036,7 +1036,7 @@ var plugins = exports.plugins = {
 					if (tlc[1] === 'random') {
 						plugins.trivia.functions.getRandomQuestion();
 						plugins.trivia.status = 'on';
-						return this.add('|html|<div class=broadcast-blue><b>A new trivia game has been started.<br>Points: '+plugins.trivia.value+'<br>Quesion: '+plugins.trivia.question+'. <code>/trivia guess,<i>guess</i></code> to guess.');
+						return this.add('|html|<div class=broadcast-blue><b>A new trivia game has been started.<br>Points: '+plugins.trivia.value+'<br>Quesion: '+plugins.trivia.question+'.<br> <code>/trivia guess,<i>guess</i></code> to guess.');
 					}
 					if (tlc[1] === 'randomtimer') {
 						plugins.trivia.functions.getRandomQuestion();
@@ -1073,7 +1073,7 @@ var plugins = exports.plugins = {
 						}
 						if(plugins.trivia.value < 1) plugins.trivia.value = 1;
 						plugins.trivia.functions.writeScore(user,plugins.trivia.value);
-						this.add('|html|User '+user.name+' has successfully completed the trivia game. Congratz!<br>(S)He is also rewarded '+plugins.trivia.value+' points for doing so.');
+						this.add('|html|<div class=broadcast-blue>User '+user.name+' has successfully guessed the right answer which was '+plugins.trivia.answer+'.. Congratz!<br>(S)He is also rewarded '+plugins.trivia.value+' points for doing so.');
 						return plugins.trivia.functions.reset();
 					} else {
 						return this.sendReplyBox('Hard Luck! Your guess was wrong.');
