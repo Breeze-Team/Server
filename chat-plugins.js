@@ -1098,7 +1098,7 @@ var plugins = exports.plugins = {
 					}
 				}
 				else if	(tlc[0] === 'help') {
-					if(!this.canBroadcast()) return;
+					if (!this.canBroadcast()) return;
 					return this.sendReplyBox('<b><u><center>Trivia Help</center></u></b><br><br>'+
 							  '<code>-/trivia new,random</code> Creates a random trivia game from the databse. Requires +<br>'+
 							  '<code>-/trivia new,randomtimer,[points lost per second]</code> Creates a random timed trivia game from the databse. Requires +<br>'+
