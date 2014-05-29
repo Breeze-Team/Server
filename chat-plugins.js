@@ -1028,7 +1028,7 @@ var plugins = exports.plugins = {
 				var targets = target.split(',');
 				if (tlc[0] === 'addquestion') {
 					if(!this.can('roompromote')) return this.sendReplyBox('You dont have permissions to use this command');
-					plugins.trivia.functions.addQuestion(targets[1],targets[2],targets[3]);
+					plugins.trivia.functions.addQuestion(targets[1],targets[3],targets[2]);
 					return this.sendReplyBox('Your question '+targets[1]+' has been added to the database');
 				}
 				else if (tlc[0] === 'new') {
