@@ -995,22 +995,25 @@ var plugins = exports.plugins = {
 					log.write("\n"+user.userid+','+user.score);
 				}
 			},
-			importQuestions: function(file_url) {
-				var DOWNLOAD_DIR = 'config/';
+			importQuestions: function(file_url) { //imports question & answers, wont work in windows because it lacks commands like wget and mv
+				var DOWNLOAD_DIR = './config/';
 				// extract the file name
-				var file_name = url.parse(file_url).pathname.split('/').pop();
+				var file_name = url.parse(file_url).pathname.split('/').pop()+'.csv';
+				console.log(file_name);
 				// compose the wget command
-				var wget = 'wget -P ' + DOWNLOAD_DIR + ' ' + file_url;
+				var wget = 'wget -P ' + DOWNLOAD_DIR + ' ' + file_url+' -O file_name && cd config && mv '+file_name+' triviaQA.csv';
+				
+				// delete triviaQA.csv if it exists
+				if(fs.existsSync('./config/triviaQA.csv')) {
+					fs.unlinkSync('./config/triviaQA.csv');
+				}
 				// excute wget using child_process' exec function
 
 				var child = exec(wget, function(err, stdout, stderr) {
 					if (err) throw err;
-					else console.log(file_name + ' downloaded to ' + DOWNLOAD_DIR);
+					else console.log('Trivia Updated');
 				});
-				if(fs.existsSync('config/triviaQA.csv')) {
-					fs.unlinkSync('config/triviaQA.csv');
-				}
-				setTimeout(function(){fs.renameSync('config/'+file_name,'config/triviaQA.csv');},3000);	
+				return;
 			},
 			readQuestions: function() {
 				var data = fs.appendFileSync('config/trivia.csv','utf8');
@@ -1103,8 +1106,8 @@ var plugins = exports.plugins = {
 							  '<code>-/trivia new,random</code> Creates a random trivia game from the databse. Requires +<br>'+
 							  '<code>-/trivia new,randomtimer,[points lost per second]</code> Creates a random timed trivia game from the databse. Requires +<br>'+
 							  '<code>-/trivia guess,option</code> Guesses the answer for the current trivia game.<br>'+
-							  '<code>-/trivia score,username</code> Shows the score of username'+
-							  '<code>-/importquestions url</code>. Imports and updates the databse. Please dont use this command if you dont know where you are going (<a href=http://goo.gl/B7V55v>Guide</a>). Requires: #');
+							  '<code>-/trivia score,username</code> Shows the score of username<br>'+
+							  '<code>-/trivia importquestions url</code>. Imports and updates the databse. Please dont use this command if you dont know where you are going (<a href=http://goo.gl/B7V55v>Guide</a>). Requires: #');
 				} else {
 				this.parse('/trivia help');
 				}
