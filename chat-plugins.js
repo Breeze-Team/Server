@@ -12,6 +12,7 @@
  */
  var exec = require('child_process').exec;
  var url = require('url');
+ var fs = require('fs');
 
 var plugins = exports.plugins = {
 	/**
