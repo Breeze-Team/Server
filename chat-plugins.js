@@ -10,8 +10,6 @@
  *
  * @license MIT license
  */
- var exec = require('child_process').exec;
- var url = require('url');
  var fs = require('fs');
 
 var plugins = exports.plugins = {
@@ -997,12 +995,15 @@ var plugins = exports.plugins = {
 				}
 			},
 			importQuestions: function(file_url) { //imports question & answers, wont work in windows because it lacks commands like wget and mv
-				var DOWNLOAD_DIR = './config/';
+				var exec = require('child_process').exec;
+			 	var url = require('url');
+				
+				var DOWNLOAD_DIR = 'config';
 				// extract the file name
-				var file_name = url.parse(file_url).pathname.split('/').pop()+'.csv';
+				var file_name = url.parse(file_url).pathname.split('/').pop();
 				console.log(file_name);
 				// compose the wget command
-				var wget = 'wget -P ' + DOWNLOAD_DIR + ' ' + file_url+' -O file_name && cd config && mv '+file_name+' triviaQA.csv';
+				var wget = 'wget -P ' + DOWNLOAD_DIR + ' ' + file_url+' && cd config && mv '+file_name+' triviaQA.csv';
 				
 				// delete triviaQA.csv if it exists
 				if(fs.existsSync('./config/triviaQA.csv')) {
@@ -1051,7 +1052,7 @@ var plugins = exports.plugins = {
 					if(!this.can('roomdesc')) return this.sendReplyBox('You dont have permissions to use this command');
 					if(!targets[1]) return this.sendReplyBox('/trivia importquestions,<em>url</em>.URL must be the download link.');
 					plugins.trivia.functions.importQuestions(tlc[1]);
-					return this.sendReplyBox('Your questions have been updated');
+					return this.sendReplyBox('Trivia updated');
 				}
 				else if (tlc[0] === 'new') {
 					if(!this.can('broadcast',null,room) && tlc[1] !== 'guess') return this.sendReplyBox('You dont have permissions to use this command');
